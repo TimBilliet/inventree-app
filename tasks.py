@@ -39,6 +39,11 @@ def ios(c):
 
 
 @task(pre=[clean, update, translate])
+def androidapk(c):
+    """Build Android apk file."""
+    c.run("fvm flutter build apk --release --no-tree-shake-icons")
+
+@task(pre=[clean, update, translate])
 def android(c):
     """Build Android app in release configuration."""
     c.run("fvm flutter build appbundle --release --no-tree-shake-icons")
