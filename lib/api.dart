@@ -28,6 +28,7 @@ import "package:inventree/inventree/sentry.dart";
 import "package:inventree/user_profile.dart";
 import "package:inventree/widget/dialogs.dart";
 import "package:inventree/widget/snacks.dart";
+import "package:inventree/widget/toast.dart";
 
 /*
  * Class representing an API response from the server
@@ -681,11 +682,16 @@ class InvenTreeAPI {
     _connecting = false;
 
     if (_connected) {
-      showSnackIcon(
+      showToast(
         L10().serverConnected,
         icon: TablerIcons.server,
         success: true,
       );
+      // showSnackIcon(
+      //   L10().serverConnected,
+      //   icon: TablerIcons.server,
+      //   success: true,
+      // );
 
       if (_notification_timer == null) {
         debug("starting notification timer");
