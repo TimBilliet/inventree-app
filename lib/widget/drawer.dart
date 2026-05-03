@@ -4,12 +4,14 @@ import "package:flutter_tabler_icons/flutter_tabler_icons.dart";
 
 import "package:inventree/api.dart";
 import "package:inventree/app_colors.dart";
+import "package:inventree/inventree/build.dart";
 import "package:inventree/inventree/part.dart";
 import "package:inventree/inventree/purchase_order.dart";
 import "package:inventree/inventree/sales_order.dart";
 import "package:inventree/inventree/stock.dart";
 import "package:inventree/l10.dart";
 import "package:inventree/settings/settings.dart";
+import "package:inventree/widget/build/build_list.dart";
 import "package:inventree/widget/order/sales_order_list.dart";
 import "package:inventree/widget/part/category_display.dart";
 import "package:inventree/widget/notifications.dart";
@@ -35,50 +37,33 @@ class ThemeSelectionDialog extends StatelessWidget {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RadioListTile<AdaptiveThemeMode>(
-            title: Row(
-              children: [
-                Icon(TablerIcons.device_desktop),
-                SizedBox(width: 10),
-                Text("System"),
-              ],
-            ),
-            value: AdaptiveThemeMode.system,
+          RadioGroup<AdaptiveThemeMode>(
             groupValue: currentThemeMode,
             onChanged: (value) {
-              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.system);
-              onThemeSelected();
+              if (value != null) {
+                AdaptiveTheme.of(context).setThemeMode(value);
+                onThemeSelected();
+              }
             },
-          ),
-          RadioListTile<AdaptiveThemeMode>(
-            title: Row(
+            child: Column(
               children: [
-                Icon(TablerIcons.sun),
-                SizedBox(width: 10),
-                Text("Light"),
+                RadioListTile<AdaptiveThemeMode>(
+                  value: AdaptiveThemeMode.system,
+                  title: Text(L10().system),
+                  secondary: Icon(TablerIcons.device_desktop),
+                ),
+                RadioListTile<AdaptiveThemeMode>(
+                  value: AdaptiveThemeMode.light,
+                  title: Text(L10().lightMode),
+                  secondary: Icon(TablerIcons.sun),
+                ),
+                RadioListTile<AdaptiveThemeMode>(
+                  value: AdaptiveThemeMode.dark,
+                  title: Text(L10().darkMode),
+                  secondary: Icon(TablerIcons.moon),
+                ),
               ],
             ),
-            value: AdaptiveThemeMode.light,
-            groupValue: currentThemeMode,
-            onChanged: (value) {
-              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.light);
-              onThemeSelected();
-            },
-          ),
-          RadioListTile<AdaptiveThemeMode>(
-            title: Row(
-              children: [
-                Icon(TablerIcons.moon),
-                SizedBox(width: 10),
-                Text("Dark"),
-              ],
-            ),
-            value: AdaptiveThemeMode.dark,
-            groupValue: currentThemeMode,
-            onChanged: (value) {
-              AdaptiveTheme.of(context).setThemeMode(AdaptiveThemeMode.dark);
-              onThemeSelected();
-            },
           ),
         ],
       ),
@@ -87,7 +72,7 @@ class ThemeSelectionDialog extends StatelessWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text("Cancel"),
+          child: Text(L10().cancel),
         ),
       ],
     );
@@ -172,6 +157,20 @@ class InvenTreeDrawer extends StatelessWidget {
     }
   }
 
+  // Load "build orders" page
+  void _buildOrders() {
+    _closeDrawer();
+
+    if (_checkConnection()) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BuildOrderListWidget(filters: {}),
+        ),
+      );
+    }
+  }
+
   // Load notifications screen
   void _notifications() {
     _closeDrawer();
@@ -239,6 +238,16 @@ class InvenTreeDrawer extends StatelessWidget {
           title: Text(L10().stock),
           leading: Icon(TablerIcons.package, color: COLOR_ACTION),
           onTap: _stock,
+        ),
+      );
+    }
+
+    if (InvenTreeBuildOrder().canView) {
+      tiles.add(
+        ListTile(
+          title: Text(L10().buildOrders),
+          leading: Icon(TablerIcons.building_factory, color: COLOR_ACTION),
+          onTap: _buildOrders,
         ),
       );
     }
