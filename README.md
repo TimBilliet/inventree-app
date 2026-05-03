@@ -1,3 +1,7 @@
+## Changes from the original
+- Add invoke task to generate .apk file
+- Change the server connected snackicon message at the bottom to a android toast message to stop blockign the qr code scanner when opening the app
+
 # InvenTree Mobile App
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
